@@ -15,10 +15,19 @@ namespace ECommerceManagementSystem.Controllers
         }
 
         // Display Product List
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            var products = await _context.Products.ToListAsync();
-            return View(products);
+            var products = from p in _context.Products
+                           select p;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                products = products.Where(p =>
+                    p.Name.Contains(searchString) ||
+                    p.Category.Contains(searchString));
+            }
+
+            return View(await products.ToListAsync());
         }
 
         // Display Create Form
