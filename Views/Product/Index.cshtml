@@ -41,10 +41,11 @@
                     <td>@product.Stock</td>
 
                     <td>
-
-                        <button class="btn btn-warning btn-sm">
+                        <a asp-action="Edit"
+                           asp-route-id="@product.Id"
+                           class="btn btn-warning btn-sm">
                             Edit
-                        </button>
+                        </a>
 
                         <button class="btn btn-danger btn-sm">
                             Delete
