@@ -8,7 +8,7 @@
 
     <h2>Add Product</h2>
 
-    <form asp-action="Create" method="post">
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
 
         <div class="mb-3">
             <label asp-for="Name"></label>
@@ -38,6 +38,14 @@
             <label asp-for="Stock"></label>
             <input asp-for="Stock" class="form-control" />
             <span asp-validation-for="Stock" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label>Product Image</label>
+            <input type="file"
+                   name="imageFile"
+                   class="form-control"
+                   accept="image/*" />
         </div>
 
         <button type="submit" class="btn btn-success">
