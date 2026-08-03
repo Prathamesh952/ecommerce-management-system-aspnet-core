@@ -108,13 +108,28 @@ namespace ECommerceManagementSystem.Controllers
             return View(product);
         }
 
-        // Save Product
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Product product)
+        public async Task<IActionResult> Create(Product product, IFormFile? imageFile)
         {
             if (ModelState.IsValid)
             {
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    string uploadsFolder = Path.Combine(_environment.WebRootPath, "images", "products");
+
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+
+                    string filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(fileStream);
+                    }
+
+                    product.ImageUrl = "/images/products/" + fileName;
+                }
+
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();
 

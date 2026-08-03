@@ -38,6 +38,7 @@
 
             <tr>
                 <th>ID</th>
+                <th>Image</th>
                 <th>Name</th>
                 <th>Price</th>
                 <th>Category</th>
@@ -54,6 +55,19 @@
                 <tr>
 
                     <td>@product.Id</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(product.ImageUrl))
+                        {
+                            <img src="@product.ImageUrl"
+                                 width="70"
+                                 height="70"
+                                 style="object-fit:cover;border-radius:8px;" />
+                        }
+                        else
+                        {
+                            <span>No Image</span>
+                        }
+                    </td>
                     <td>@product.Name</td>
                     <td>₹ @product.Price</td>
                     <td>@product.Category</td>
