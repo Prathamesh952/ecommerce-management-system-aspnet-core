@@ -13,5 +13,6 @@ namespace ECommerceManagementSystem.Data
 
         // Products table
         public DbSet<Product> Products { get; set; }
+        public DbSet<Category> Categories { get; set; }
     }
 }

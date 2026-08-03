@@ -27,8 +27,7 @@ namespace ECommerceManagementSystem.Controllers
             if (!string.IsNullOrEmpty(searchString))
             {
                 products = products.Where(p =>
-                    p.Name.Contains(searchString) ||
-                    p.Category.Contains(searchString));
+                    p.Name.Contains(searchString));
             }
 
             return View(await products.ToListAsync());

@@ -19,7 +19,9 @@ namespace ECommerceManagementSystem.Models
 
         [Required]
         [StringLength(50)]
-        public string Category { get; set; } = string.Empty;
+        public int CategoryId { get; set; }
+
+        public Category? Category { get; set; }
 
         public string? ImageUrl { get; set; }
 
