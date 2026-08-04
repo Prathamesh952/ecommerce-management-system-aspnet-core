@@ -1,0 +1,76 @@
+@model ECommerceManagementSystem.Models.ViewModels.CheckoutViewModel
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<h2 class="fw-bold mb-4"><i class="bi bi-credit-card text-primary me-2"></i>Checkout</h2>
+
+<form asp-action="Checkout" method="post">
+    <div class="row">
+        <div class="col-lg-7">
+            <div class="card card-custom p-4 mb-4">
+                <h4 class="fw-bold mb-3"><i class="bi bi-geo-alt text-primary me-2"></i>Shipping Details</h4>
+                
+                <div class="mb-3">
+                    <label asp-for="CustomerName" class="form-label font-weight-semibold"></label>
+                    <input asp-for="CustomerName" class="form-control" />
+                    <span asp-validation-for="CustomerName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ShippingAddress" class="form-label font-weight-semibold"></label>
+                    <input asp-for="ShippingAddress" class="form-control" placeholder="Street address..." />
+                    <span asp-validation-for="ShippingAddress" class="text-danger"></span>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="City" class="form-label font-weight-semibold"></label>
+                        <input asp-for="City" class="form-control" />
+                        <span asp-validation-for="City" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="PostalCode" class="form-label font-weight-semibold"></label>
+                        <input asp-for="PostalCode" class="form-control" />
+                        <span asp-validation-for="PostalCode" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <h4 class="fw-bold mb-3 mt-4"><i class="bi bi-wallet2 text-primary me-2"></i>Payment Method</h4>
+                <div class="mb-3">
+                    <select asp-for="PaymentMethod" class="form-select">
+                        <option value="Credit Card">Credit / Debit Card</option>
+                        <option value="PayPal">PayPal</option>
+                        <option value="Cash On Delivery">Cash On Delivery (COD)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card card-custom p-4">
+                <h4 class="fw-bold mb-3">Your Items</h4>
+                <ul class="list-group list-group-flush mb-3">
+                    @foreach (var item in Model.Cart.Items)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                                <h6 class="my-0">@item.ProductName</h6>
+                                <small class="text-muted">Qty: @item.Quantity x $@item.UnitPrice.ToString("F2")</small>
+                            </div>
+                            <span class="text-muted fw-bold">$@item.SubTotal.ToString("F2")</span>
+                        </li>
+                    }
+                </ul>
+
+                <hr />
+                <div class="d-flex justify-content-between fs-4 fw-bold mb-4">
+                    <span>Total Pay:</span>
+                    <span class="text-success">$@Model.Cart.GrandTotal.ToString("F2")</span>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100 py-3 fw-bold"><i class="bi bi-check-circle-fill me-1"></i> Complete Purchase</button>
+            </div>
+        </div>
+    </div>
+</form>

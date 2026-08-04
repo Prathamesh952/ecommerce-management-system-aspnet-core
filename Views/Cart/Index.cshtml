@@ -1,0 +1,93 @@
+@model ECommerceManagementSystem.Models.ViewModels.CartViewModel
+@{
+    ViewData["Title"] = "Shopping Cart";
+}
+
+<h2 class="fw-bold mb-4"><i class="bi bi-cart3 text-primary me-2"></i>Shopping Cart</h2>
+
+@if (Model.Items.Any())
+{
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card card-custom p-3 mb-4">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Subtotal</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Items)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://via.placeholder.com/50" : item.ImageUrl)" style="width: 50px; height: 50px; object-fit: cover;" class="rounded border me-3" />
+                                            <span class="fw-semibold">@item.ProductName</span>
+                                        </div>
+                                    </td>
+                                    <td class="fw-bold">$@item.UnitPrice.ToString("F2")</td>
+                                    <td>
+                                        <form asp-action="UpdateQuantity" method="post" class="d-flex align-items-center" style="max-width: 120px;">
+                                            <input type="hidden" name="productId" value="@item.ProductId" />
+                                            <input type="number" name="quantity" value="@item.Quantity" min="1" class="form-control form-control-sm text-center me-2" onchange="this.form.submit()" />
+                                        </form>
+                                    </td>
+                                    <td class="fw-bold text-success">$@item.SubTotal.ToString("F2")</td>
+                                    <td class="text-end">
+                                        <form asp-action="RemoveFromCart" method="post" class="d-inline">
+                                            <input type="hidden" name="productId" value="@item.ProductId" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                    <form asp-action="ClearCart" method="post">
+                        <button type="submit" class="btn btn-outline-secondary btn-sm"><i class="bi bi-x-circle me-1"></i> Clear Cart</button>
+                    </form>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left me-1"></i> Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card card-custom p-4">
+                <h4 class="fw-bold mb-3">Order Summary</h4>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal:</span>
+                    <span class="fw-bold">$@Model.GrandTotal.ToString("F2")</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Shipping:</span>
+                    <span class="text-success fw-bold">FREE</span>
+                </div>
+                <hr />
+                <div class="d-flex justify-content-between fs-5 fw-bold mb-4">
+                    <span>Grand Total:</span>
+                    <span class="text-success">$@Model.GrandTotal.ToString("F2")</span>
+                </div>
+
+                <a asp-controller="Order" asp-action="Checkout" class="btn btn-success w-100 py-3 fw-bold fs-6"><i class="bi bi-credit-card me-2"></i> Proceed to Checkout</a>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="text-center py-5">
+        <i class="bi bi-cart-x display-1 text-muted mb-3 d-block"></i>
+        <h3>Your shopping cart is empty.</h3>
+        <p class="text-muted">Explore our store and add items to your cart!</p>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-primary mt-2 px-4"><i class="bi bi-shop me-1"></i> Start Shopping</a>
+    </div>
+}

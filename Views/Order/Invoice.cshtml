@@ -1,0 +1,79 @@
+@model ECommerceManagementSystem.Models.Order
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Invoice #@Model.Id - Enterprise E-Commerce</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fff; padding: 40px; }
+        .invoice-box { max-width: 800px; margin: auto; border: 1px solid #eee; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+    </style>
+</head>
+<body onload="window.print()">
+    <div class="invoice-box">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold text-primary mb-0">ECommerce<span class="text-dark">Pro</span></h2>
+                <small class="text-muted">Tax Invoice / Order Receipt</small>
+            </div>
+            <div class="text-end">
+                <h4 class="fw-bold m-0">INVOICE</h4>
+                <small class="text-muted">Invoice #: INV-@Model.Id</small><br />
+                <small class="text-muted">Date: @Model.OrderDate.ToString("yyyy-MM-dd")</small>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row mb-4">
+            <div class="col-6">
+                <strong>Billed To:</strong><br />
+                @Model.CustomerName<br />
+                @Model.ShippingAddress<br />
+                @Model.City, @Model.PostalCode
+            </div>
+            <div class="col-6 text-end">
+                <strong>Payment Details:</strong><br />
+                Method: @Model.PaymentMethod<br />
+                Status: @Model.Status
+            </div>
+        </div>
+
+        <table class="table table-bordered mb-4">
+            <thead class="table-light">
+                <tr>
+                    <th>Item Description</th>
+                    <th class="text-center">Price</th>
+                    <th class="text-center">Qty</th>
+                    <th class="text-end">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrderItems)
+                {
+                    <tr>
+                        <td>@(item.Product?.Name ?? "Product #" + item.ProductId)</td>
+                        <td class="text-center">$@item.UnitPrice.ToString("F2")</td>
+                        <td class="text-center">@item.Quantity</td>
+                        <td class="text-end">$@((item.Quantity * item.UnitPrice).ToString("F2"))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="row">
+            <div class="col-6">
+                <small class="text-muted">Thank you for your business! If you have questions about this invoice, please contact support@ecommercepro.com</small>
+            </div>
+            <div class="col-6 text-end">
+                <h4 class="fw-bold">Total Paid: <span class="text-success">$@Model.TotalAmount.ToString("F2")</span></h4>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

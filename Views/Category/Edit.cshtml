@@ -1,24 +1,25 @@
 @model ECommerceManagementSystem.Models.Category
 @{
-    ViewData["Title"] = "Create Category";
+    ViewData["Title"] = "Edit Category";
 }
 
 <div class="row justify-content-center">
     <div class="col-md-6">
         <div class="card card-custom p-4">
-            <h3 class="fw-bold mb-3"><i class="bi bi-folder-plus text-primary me-2"></i>Add New Category</h3>
-            <form asp-action="Create" method="post">
+            <h3 class="fw-bold mb-3"><i class="bi bi-pencil-square text-warning me-2"></i>Edit Category</h3>
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="Id" />
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                 <div class="mb-3">
                     <label asp-for="Name" class="form-label font-weight-semibold">Category Name</label>
-                    <input asp-for="Name" class="form-control" placeholder="e.g. Laptops & Computers" />
+                    <input asp-for="Name" class="form-control" />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
 
                 <div class="d-flex justify-content-between">
-                    <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back to List</a>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle me-1"></i> Save Category</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Cancel</a>
+                    <button type="submit" class="btn btn-warning"><i class="bi bi-check-circle me-1"></i> Update Category</button>
                 </div>
             </form>
         </div>

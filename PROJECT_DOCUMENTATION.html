@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise E-Commerce Management System - Technical Architecture & Codebase Guide</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #1e293b;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 40px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+        h1, h2, h3, h4 {
+            color: #0f172a;
+            font-weight: 700;
+        }
+        h1 {
+            color: #2563eb;
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 10px;
+        }
+        h2 {
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+            margin-top: 30px;
+        }
+        .badge {
+            display: inline-block;
+            background-color: #2563eb;
+            color: #ffffff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        code {
+            background-color: #f1f5f9;
+            color: #0f172a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        pre {
+            background-color: #0f172a;
+            color: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+        }
+        .callout {
+            background-color: #eff6ff;
+            border-left: 4px solid #2563eb;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛍️ Enterprise E-Commerce Management System</h1>
+        <p><strong>Technical Architecture & Exhaustive Codebase Guide</strong></p>
+        <p><span class="badge">Production Domain: https://ecommercepro.com</span> <span class="badge" style="background:#7c3aed;">.NET 10 LTS</span> <span class="badge" style="background:#059669;">SQL Server 2022</span></p>
+
+        <hr />
+
+        <h2>1. Executive Summary for Developers & Interviewers</h2>
+        <p>This master documentation file explains every file, entity, controller, view, and design pattern in the <strong>Enterprise E-Commerce Management System</strong>. Designed for software engineers, mentors, and interviewers, it acts as a comprehensive reference guide to analyze the project in 5 minutes.</p>
+
+        <div class="callout">
+            <strong>Key Features:</strong> ASP.NET Core MVC (.NET 10 LTS), EF Core 10 Eager Loading, ASP.NET Core Identity with Role Security, Session-Based Cart, Order Management & Printable Invoices, Multi-Image Upload, Chart.js Dashboard, CSV Report Export, and Automated Seed Data.
+        </div>
+
+        <h2>2. Architecture & Request Execution Pipeline</h2>
+        <pre>
+[ Client Browser ] ---> (https://ecommercepro.com)
+       │
+       ▼
+[ ASP.NET Core MVC Pipeline ]
+ ├── HTTPS Redirection & Static Files Middleware
+ ├── Routing Middleware
+ ├── Authentication & Authorization Middleware
+ └── Session Middleware (Cart State)
+       │
+       ▼
+[ Controller Execution ] ---> [ ApplicationDbContext ] ---> [ SQL Server 2022 ]
+       │
+       ▼
+[ ViewModels Binding ] ---> [ Razor View Engine ] ---> [ HTML Output ]
+        </pre>
+
+        <h2>3. File-by-File Breakdown</h2>
+
+        <h3>Models Layer</h3>
+        <ul>
+            <li><code>Models/Category.cs</code>: Category entity managing 1-to-Many product grouping.</li>
+            <li><code>Models/Product.cs</code>: Core product entity with Price, Stock, CategoryId FK, and navigation collections.</li>
+            <li><code>Models/ProductImage.cs</code>: Handles multi-image galleries per product.</li>
+            <li><code>Models/ApplicationUser.cs</code>: Extends IdentityUser with FullName, Address, City, and PostalCode.</li>
+            <li><code>Models/Order.cs & OrderItem.cs</code>: Stores order headers and line items snapshots.</li>
+            <li><code>Models/OrderStatus.cs</code>: Enum representing Pending, Processing, Shipped, Delivered, Cancelled states.</li>
+            <li><code>Models/CartItem.cs</code>: In-memory session object for cart management.</li>
+            <li><code>Models/Wishlist.cs</code>: Maps user to bookmarked products.</li>
+            <li><code>Models/ProductReview.cs</code>: Handles customer star ratings (1-5) and feedback comments.</li>
+            <li><code>Models/PaginatedList.cs</code>: Generic LINQ pagination utility (.Skip/.Take).</li>
+        </ul>
+
+        <h3>Controllers Layer</h3>
+        <ul>
+            <li><code>Controllers/AccountController.cs</code>: Registration, login, logout, and access control.</li>
+            <li><code>Controllers/CategoryController.cs</code>: Category CRUD with FK delete validation protection.</li>
+            <li><code>Controllers/ProductController.cs</code>: Product CRUD, dropdown binding, multi-image upload handling.</li>
+            <li><code>Controllers/HomeController.cs</code>: Storefront catalog, search, category filter, price sorting, reviews.</li>
+            <li><code>Controllers/CartController.cs</code>: Session cart operations (Add, Update, Remove, Clear).</li>
+            <li><code>Controllers/OrderController.cs</code>: Checkout, stock deduction, order history, printable invoice generation.</li>
+            <li><code>Controllers/AdminController.cs</code>: Executive dashboard stats and Chart.js datasets.</li>
+            <li><code>Controllers/ReportsController.cs</code>: Sales reports, top-selling products, CSV export.</li>
+            <li><code>Controllers/WishlistController.cs</code>: User wishlist management.</li>
+        </ul>
+
+        <h3>Data Context & Infrastructure</h3>
+        <ul>
+            <li><code>Data/ApplicationDbContext.cs</code>: Inherits IdentityDbContext with DbSets and Fluent API configurations.</li>
+            <li><code>Program.cs</code>: Registers services, pipeline, and seeds admin account and 8+ default products.</li>
+            <li><code>appsettings.json</code>: Contains SQL Server connection string and domain metadata (https://ecommercepro.com).</li>
+        </ul>
+
+        <h2>4. How to Open in Microsoft Word or Save as PDF</h2>
+        <ol>
+            <li><strong>To open in Microsoft Word:</strong> Open Microsoft Word -> Click <em>File</em> -> <em>Open</em> -> Select <code>PROJECT_DOCUMENTATION.html</code>. Word will open and display this document with full formatting.</li>
+            <li><strong>To Save as PDF:</strong> Open <code>PROJECT_DOCUMENTATION.html</code> in Google Chrome or Edge -> Press <code>Ctrl + P</code> -> Choose <em>Save as PDF</em>.</li>
+        </ol>
+    </div>
+</body>
+</html>

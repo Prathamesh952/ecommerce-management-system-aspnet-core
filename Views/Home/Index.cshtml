@@ -1,8 +1,137 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model ECommerceManagementSystem.Models.ViewModels.ProductFilterViewModel
+@{
+    ViewData["Title"] = "Storefront";
+    var featured = ViewBag.FeaturedProducts as List<ECommerceManagementSystem.Models.Product>;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Hero Banner -->
+<div class="bg-gradient-primary text-white p-5 rounded-4 mb-4 shadow-sm">
+    <div class="row align-items-center">
+        <div class="col-lg-8">
+            <h1 class="display-4 fw-bold mb-2">Discover Enterprise Grade Products</h1>
+            <p class="lead mb-4">Shop top-rated electronics, fashion, home essentials & books with fast delivery and instant support.</p>
+            <a href="#storefront-catalog" class="btn btn-light btn-lg fw-bold text-primary px-4"><i class="bi bi-bag-fill me-2"></i>Browse Catalog</a>
+        </div>
+        <div class="col-lg-4 text-center d-none d-lg-block">
+            <i class="bi bi-shop display-1 opacity-75"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Products Section -->
+@if (featured != null && featured.Any())
+{
+    <div class="mb-5">
+        <h3 class="fw-bold mb-3"><i class="bi bi-star-fill text-warning me-2"></i>Featured Highlights</h3>
+        <div class="row g-4">
+            @foreach (var prod in featured)
+            {
+                <div class="col-sm-6 col-md-3">
+                    <div class="card card-custom h-100 border-primary">
+                        <img src="@(string.IsNullOrEmpty(prod.ImageUrl) ? "https://via.placeholder.com/300" : prod.ImageUrl)" class="card-img-top p-2 rounded-top" style="height: 180px; object-fit: cover;" alt="@prod.Name" />
+                        <div class="card-body d-flex flex-column">
+                            <span class="badge bg-primary w-50 mb-2">Featured</span>
+                            <h6 class="card-title fw-bold text-truncate">@prod.Name</h6>
+                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                <span class="fw-bold text-success fs-5">$@prod.Price.ToString("F2")</span>
+                                <a asp-action="Details" asp-route-id="@prod.Id" class="btn btn-sm btn-outline-primary">View</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<div id="storefront-catalog">
+    <h3 class="fw-bold mb-3"><i class="bi bi-grid-3x3-gap-fill text-primary me-2"></i>Product Catalog</h3>
+
+    <!-- Filter & Search Bar -->
+    <div class="card card-custom p-3 mb-4">
+        <form asp-action="Index" method="get" class="row g-3">
+            <div class="col-md-4">
+                <input type="text" name="searchString" value="@Model.SearchString" class="form-control" placeholder="Search products..." />
+            </div>
+            <div class="col-md-3">
+                <select name="categoryId" class="form-select">
+                    <option value="">-- All Categories --</option>
+                    @foreach (var cat in Model.Categories)
+                    {
+                        <option value="@cat.Id" selected="@(Model.CategoryId == cat.Id ? "selected" : null)">@cat.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="sortOrder" class="form-select">
+                    <option value="" selected="@(string.IsNullOrEmpty(Model.SortOrder) ? "selected" : null)">Sort by: Newest</option>
+                    <option value="price_asc" selected="@(Model.SortOrder == "price_asc" ? "selected" : null)">Price: Low to High</option>
+                    <option value="price_desc" selected="@(Model.SortOrder == "price_desc" ? "selected" : null)">Price: High to Low</option>
+                    <option value="name_asc" selected="@(Model.SortOrder == "name_asc" ? "selected" : null)">Name: A-Z</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Search</button>
+                <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-counterclockwise"></i></a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="row g-4">
+        @if (Model.Products != null && Model.Products.Any())
+        {
+            @foreach (var prod in Model.Products)
+            {
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="card card-custom h-100">
+                        <img src="@(string.IsNullOrEmpty(prod.ImageUrl) ? "https://via.placeholder.com/300" : prod.ImageUrl)" class="card-img-top p-2" style="height: 200px; object-fit: cover;" alt="@prod.Name" />
+                        <div class="card-body d-flex flex-column">
+                            <small class="text-muted mb-1">@(prod.Category?.Name ?? "General")</small>
+                            <h5 class="card-title fw-bold text-truncate mb-2">@prod.Name</h5>
+                            <p class="card-text text-muted small flex-grow-1" style="max-height: 40px; overflow: hidden;">@prod.Description</p>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="fs-5 fw-bold text-success">$@prod.Price.ToString("F2")</span>
+                                <span class="badge @(prod.Stock > 0 ? "bg-success" : "bg-danger")">
+                                    @(prod.Stock > 0 ? "In Stock" : "Out of Stock")
+                                </span>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <a asp-action="Details" asp-route-id="@prod.Id" class="btn btn-outline-secondary btn-sm flex-fill"><i class="bi bi-info-circle me-1"></i> Details</a>
+                                <form asp-controller="Cart" asp-action="AddToCart" method="post" class="flex-fill">
+                                    <input type="hidden" name="productId" value="@prod.Id" />
+                                    <button type="submit" class="btn btn-primary btn-sm w-100" @(prod.Stock <= 0 ? "disabled" : "")><i class="bi bi-cart-plus me-1"></i> Add</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center py-5 text-muted">
+                <i class="bi bi-search display-3 text-secondary mb-3 d-block"></i>
+                <h4>No products found matching your search options.</h4>
+            </div>
+        }
+    </div>
+
+    <!-- Pagination -->
+    @if (Model.Products != null && Model.Products.TotalPages > 1)
+    {
+        <div class="d-flex justify-content-center mt-5">
+            <ul class="pagination">
+                <li class="page-item @(Model.Products.HasPreviousPage ? "" : "disabled")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.Products.PageIndex - 1)" asp-route-searchString="@Model.SearchString" asp-route-categoryId="@Model.CategoryId" asp-route-sortOrder="@Model.SortOrder">Previous</a>
+                </li>
+                <li class="page-item disabled"><span class="page-link">Page @Model.Products.PageIndex of @Model.Products.TotalPages</span></li>
+                <li class="page-item @(Model.Products.HasNextPage ? "" : "disabled")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.Products.PageIndex + 1)" asp-route-searchString="@Model.SearchString" asp-route-categoryId="@Model.CategoryId" asp-route-sortOrder="@Model.SortOrder">Next</a>
+                </li>
+            </ul>
+        </div>
+    }
 </div>

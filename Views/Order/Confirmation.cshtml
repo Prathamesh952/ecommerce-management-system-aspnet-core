@@ -1,0 +1,39 @@
+@model ECommerceManagementSystem.Models.Order
+@{
+    ViewData["Title"] = "Order Confirmation #" + Model.Id;
+}
+
+<div class="row justify-content-center py-4">
+    <div class="col-md-8 text-center">
+        <div class="card card-custom p-5">
+            <div class="display-1 text-success mb-3"><i class="bi bi-check-circle-fill"></i></div>
+            <h2 class="fw-bold mb-2">Thank You For Your Order!</h2>
+            <p class="lead text-muted mb-4">Your order reference number is <strong>#@Model.Id</strong>. A receipt has been saved to your account.</p>
+
+            <div class="bg-light p-4 rounded text-start mb-4 border">
+                <h5 class="fw-bold border-bottom pb-2">Order Summary</h5>
+                <div class="row mb-2">
+                    <div class="col-sm-4 text-muted">Customer Name:</div>
+                    <div class="col-sm-8 fw-semibold">@Model.CustomerName</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-4 text-muted">Shipping Address:</div>
+                    <div class="col-sm-8">@Model.ShippingAddress, @Model.City, @Model.PostalCode</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-4 text-muted">Total Paid:</div>
+                    <div class="col-sm-8 fw-bold text-success">$@Model.TotalAmount.ToString("F2")</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 text-muted">Status:</div>
+                    <div class="col-sm-8"><span class="badge bg-warning text-dark">@Model.Status</span></div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center gap-3">
+                <a asp-action="Invoice" asp-route-id="@Model.Id" target="_blank" class="btn btn-outline-primary"><i class="bi bi-printer me-1"></i> Print Invoice</a>
+                <a asp-action="Index" class="btn btn-primary"><i class="bi bi-bag-check me-1"></i> View Order History</a>
+            </div>
+        </div>
+    </div>
+</div>
