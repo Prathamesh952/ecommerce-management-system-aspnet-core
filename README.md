@@ -175,15 +175,5 @@ Navigate to `https://ecommercepro.com` (or your configured application URL). The
 
 ---
 
-## 📚 Technical Interview Preparation Cheat Sheet
-
-### 1. What is Eager Loading in Entity Framework Core?
-> **Answer**: Eager loading is a data loading technique where related entities are fetched from the database in the initial SQL query using `.Include()` and `.ThenInclude()`. This prevents the **N+1 Query Problem** associated with lazy loading.
-
-### 2. How does ASP.NET Core Identity store passwords securely?
-> **Answer**: Identity uses **PBKDF2** (Password-Based Key Derivation Function 2) with HMAC-SHA256 hashing and a unique 128-bit salt per user (`IPasswordHasher<TUser>`). Plaintext passwords are never stored in the database.
-
----
-
 ## 📄 License
 This project is licensed under the MIT License — built for educational and enterprise portfolio purposes.
